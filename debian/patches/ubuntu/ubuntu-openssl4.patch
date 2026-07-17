@@ -1,0 +1,91 @@
+Description: Make vendored deps OpenSSL 4.0 compatible
+ Currently, rustc builds fail with OpenSSL 4.0 because its openssl-sys version
+ (v0.7.111) is older than the version where OpenSSL 4.0 support was added--
+ v0.7.114.
+ .
+ This patch bumps the required openssl-sys and curl-sys to the versions required
+ to be compatible with OpenSSL 4.0, allowing the toolchain to build against
+ OpenSSL 4.0.
+Author: Rudi Heitbaum
+Origin: other, https://github.com/rust-lang/rust/issues/155397#issuecomment-4303607073
+Bug: https://github.com/rust-lang/rust/issues/155397
+Last-Update: 2026-06-29
+---
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -978,9 +978,9 @@
+ 
+ [[package]]
+ name = "curl-sys"
+-version = "0.4.84+curl-8.17.0"
++version = "0.4.87+curl-8.19.0"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "abc4294dc41b882eaff37973c2ec3ae203d0091341ee68fbadd1d06e0c18a73b"
++checksum = "61a460380f0ef783703dcbe909107f39c162adeac050d73c850055118b5b6327"
+ dependencies = [
+  "cc",
+  "libc",
+@@ -2715,9 +2715,9 @@
+ 
+ [[package]]
+ name = "openssl-sys"
+-version = "0.9.111"
++version = "0.9.114"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "82cab2d520aa75e3c58898289429321eb788c3106963d0dc886ec7a5f4adc321"
++checksum = "13ce1245cd07fcc4cfdb438f7507b0c7e4f3849a69fd84d52374c66d83741bb6"
+ dependencies = [
+  "cc",
+  "libc",
+--- a/src/tools/cargo/Cargo.lock
++++ b/src/tools/cargo/Cargo.lock
+@@ -879,9 +879,9 @@
+ 
+ [[package]]
+ name = "curl-sys"
+-version = "0.4.83+curl-8.15.0"
++version = "0.4.87+curl-8.19.0"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "5830daf304027db10c82632a464879d46a3f7c4ba17a31592657ad16c719b483"
++checksum = "61a460380f0ef783703dcbe909107f39c162adeac050d73c850055118b5b6327"
+ dependencies = [
+  "cc",
+  "libc",
+@@ -3288,9 +3288,9 @@
+ 
+ [[package]]
+ name = "openssl-sys"
+-version = "0.9.111"
++version = "0.9.114"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "82cab2d520aa75e3c58898289429321eb788c3106963d0dc886ec7a5f4adc321"
++checksum = "13ce1245cd07fcc4cfdb438f7507b0c7e4f3849a69fd84d52374c66d83741bb6"
+ dependencies = [
+  "cc",
+  "libc",
+--- a/src/tools/cargo/Cargo.toml
++++ b/src/tools/cargo/Cargo.toml
+@@ -43,7 +43,8 @@
+ curl = "0.4.49"
+ # Do not upgrade curl-sys past 0.4.83
+ # https://github.com/rust-lang/cargo/issues/16357
+-curl-sys = "=0.4.83"
++# Ubuntu: this issue only affects FreeBSD; OK to upgrade
++curl-sys = "=0.4.87"
+ filetime = "0.2.26"
+ flate2 = { version = "1.1.9", default-features = false, features = ["zlib-rs"] }
+ git2 = "0.20.4"
+--- a/src/tools/miri/Cargo.lock
++++ b/src/tools/miri/Cargo.lock
+@@ -1011,9 +1011,9 @@
+ 
+ [[package]]
+ name = "openssl-sys"
+-version = "0.9.111"
++version = "0.9.114"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "82cab2d520aa75e3c58898289429321eb788c3106963d0dc886ec7a5f4adc321"
++checksum = "13ce1245cd07fcc4cfdb438f7507b0c7e4f3849a69fd84d52374c66d83741bb6"
+ dependencies = [
+  "cc",
+  "libc",
